@@ -2,6 +2,7 @@
 
 import gc
 import time
+from typing import cast
 
 import diffrax
 import equinox as eqx
@@ -9,10 +10,11 @@ import jax
 import jax.experimental.ode as experimental
 import jax.nn as jnn
 import jax.numpy as jnp
-import jax.random as jrandom
+import jax.random as jr
 import numpy as np
-import torch
-import torchdiffeq
+import torch  # pyright: ignore
+import torchdiffeq  # pyright: ignore
+from jaxtyping import Array
 
 
 class FuncTorch(torch.nn.Module):
@@ -42,7 +44,7 @@ class FuncJax(eqx.Module):
             depth=1,
             activation=jnn.softplus,
             final_activation=jnn.tanh,
-            key=jrandom.PRNGKey(0),
+            key=jr.PRNGKey(0),
         )
 
     def __call__(self, t, y, args):
@@ -91,7 +93,7 @@ class NeuralODEDiffrax(eqx.Module):
             saveat=saveat,
             adjoint=diffrax.BacksolveAdjoint(),
         )
-        return jnp.sum(sol.ys)
+        return jnp.sum(cast(Array, sol.ys))
 
 
 class NeuralODEExperimental(eqx.Module):
@@ -180,7 +182,7 @@ def run(multiple, grad, batch_size=64, t1=100):
         func_torch[2].weight.copy_(torch.tensor(np.asarray(func_jax.layers[1].weight)))
         func_torch[2].bias.copy_(torch.tensor(np.asarray(func_jax.layers[1].bias)))
 
-    y0_jax = jrandom.normal(jrandom.PRNGKey(1), (batch_size, 4))
+    y0_jax = jr.normal(jr.PRNGKey(1), (batch_size, 4))
     y0_torch = torch.tensor(np.asarray(y0_jax))
 
     time_torch(neural_ode_torch, y0_torch, t1, grad)

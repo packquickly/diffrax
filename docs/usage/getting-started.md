@@ -69,13 +69,13 @@ $y(0) = 1 \qquad \mathrm{d}y(t) = -y(t)\mathrm{d}t + \frac{t}{10}\mathrm{d}w(t)$
 over the interval $[0, 3]$.
 
 ```python
-import jax.random as jrandom
+import jax.random as jr
 from diffrax import diffeqsolve, ControlTerm, Euler, MultiTerm, ODETerm, SaveAt, VirtualBrownianTree
 
 t0, t1 = 1, 3
 drift = lambda t, y, args: -y
 diffusion = lambda t, y, args: 0.1 * t
-brownian_motion = VirtualBrownianTree(t0, t1, tol=1e-3, shape=(), key=jrandom.PRNGKey(0))
+brownian_motion = VirtualBrownianTree(t0, t1, tol=1e-3, shape=(), key=jr.PRNGKey(0))
 terms = MultiTerm(ODETerm(drift), ControlTerm(diffusion, brownian_motion))
 solver = Euler()
 saveat = SaveAt(dense=True)
@@ -98,15 +98,6 @@ print(sol.evaluate(1.1))  # DeviceArray(0.89436394)
 
 As you can see, basically nothing has changed compared to the ODE example; all the same APIs are used. The only difference is that we created an SDE solver rather than an ODE solver.
 
-
-!!! info
-
-    If using some SDE-specific solvers, for example [`diffrax.ItoMilstein`][], then the solver makes a distinction between drift and diffusion. (In the previous example, the solver [`diffrax.Euler`][] is completely oblivious to this distinction. In this case the drift and diffusion should be passed separately as a 2-tuple of terms, rather than wrapped into a single [`diffrax.MultiTerm`][]. This would involve changing the above example with:
-
-    ```python
-    terms = (ODETerm(drift), ControlTerm(diffusion, brownian_motion))
-    solver = ItoMilstein()
-    ```
 
 !!! info
 
