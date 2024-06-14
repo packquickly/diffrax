@@ -194,11 +194,11 @@ def test_ode_order(solver, dtype):
 @pytest.mark.parametrize("solver", all_symplectic_solvers)
 def test_symplectic_ode_order(solver):
     solver = implicit_tol(solver)
-    key = jrandom.PRNGKey(17)
-    p_key, q_key, k_key = jrandom.split(key, 3)
-    p0 = jrandom.uniform(p_key, shape=(), minval=0, maxval=1)
-    q0 = jrandom.uniform(q_key, shape=(), minval=0, maxval=1)
-    k = jrandom.uniform(k_key, shape=(), minval=0.1, maxval=10)
+    key = jr.PRNGKey(17)
+    p_key, q_key, k_key = jr.split(key, 3)
+    p0 = jr.uniform(p_key, shape=(), minval=0, maxval=1)
+    q0 = jr.uniform(q_key, shape=(), minval=0, maxval=1)
+    k = jr.uniform(k_key, shape=(), minval=0.1, maxval=10)
     y0 = (p0, q0)
     t0 = 0
     t1 = 4

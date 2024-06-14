@@ -2,10 +2,10 @@ from typing import Tuple
 
 from equinox.internal import ω
 
-from ..custom_types import Bool, DenseInfo, PyTree, Scalar
-from ..local_interpolation import LocalLinearInterpolation
-from ..solution import RESULTS
-from ..term import AbstractTerm
+from .._custom_types import BoolScalarLike, DenseInfo, Args, RealScalarLike
+from .._local_interpolation import LocalLinearInterpolation
+from .._solution import RESULTS
+from .._term import AbstractTerm
 from .base import AbstractSolver
 
 _ErrorEstimate = None
@@ -27,23 +27,23 @@ class StormerVerlet(AbstractSolver):
     def init(
         self,
         terms: Tuple[AbstractTerm, AbstractTerm],
-        t0: Scalar,
-        t1: Scalar,
-        y0: PyTree,
-        args: PyTree,
+        t0: RealScalarLike,
+        t1: RealScalarLike,
+        y0: Args,
+        args: Args,
     ) -> _SolverState:
         return None
 
     def step(
         self,
         terms: Tuple[AbstractTerm, AbstractTerm],
-        t0: Scalar,
-        t1: Scalar,
-        y0: Tuple[PyTree, PyTree],
-        args: PyTree,
+        t0: RealScalarLike,
+        t1: RealScalarLike,
+        y0: Tuple[Args, Args],
+        args: Args,
         solver_state: _SolverState,
-        made_jump: Bool,
-    ) -> Tuple[Tuple[PyTree, PyTree], _ErrorEstimate, DenseInfo, _SolverState, RESULTS]:
+        made_jump: BoolScalarLike,
+    ) -> Tuple[Tuple[Args, Args], _ErrorEstimate, DenseInfo, _SolverState, RESULTS]:
         del solver_state, made_jump
 
         term_1, term_2 = terms
@@ -56,7 +56,7 @@ class StormerVerlet(AbstractSolver):
 
         yhalf_1 = (y0_1 ** ω + term_1.vf_prod(t0, y0_2, args, control1_half_1) ** ω).ω
         y1_2 = (y0_2 ** ω + term_2.vf_prod(midpoint, yhalf_1, args, control2) ** ω).ω
-        y1_1 = (yhalf_1 ** ω + term_1.vf_prod(t1, y1_2, args, control1_half_2 ** ω)).ω
+        y1_1 = (yhalf_1 ** ω + term_1.vf_prod(t1, y1_2, args, control1_half_2) ** ω).ω
 
         y1 = (y1_1, y1_2)
         dense_info = dict(y0=y0, y1=y1)
@@ -65,10 +65,10 @@ class StormerVerlet(AbstractSolver):
     def func(
         self,
         terms: Tuple[AbstractTerm, AbstractTerm],
-        t0: Scalar,
-        y0: Tuple[PyTree, PyTree],
-        args: PyTree
-    ) -> Tuple[PyTree, PyTree]:
+        t0: RealScalarLike,
+        y0: Tuple[Args, Args],
+        args: Args
+    ) -> Tuple[Args, Args]:
         term_1, term_2 = terms
         y0_1, y0_2 = y0
         f1 = term_1.func(t0, y0_2, args)

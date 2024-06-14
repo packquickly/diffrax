@@ -41,49 +41,7 @@ from ._local_interpolation import (
     LocalLinearInterpolation as LocalLinearInterpolation,
     ThirdOrderHermitePolynomialInterpolation as ThirdOrderHermitePolynomialInterpolation,  # noqa: E501
 )
-from .path import AbstractPath
-from .saveat import SaveAt, SubSaveAt
-from .solution import is_event, is_okay, is_successful, RESULTS, Solution
-from .solver import (
-    AbstractAdaptiveSolver,
-    AbstractDIRK,
-    AbstractERK,
-    AbstractESDIRK,
-    AbstractImplicitSolver,
-    AbstractItoSolver,
-    AbstractRungeKutta,
-    AbstractSDIRK,
-    AbstractSolver,
-    AbstractStratonovichSolver,
-    AbstractWrappedSolver,
-    Bosh3,
-    ButcherTableau,
-    CalculateJacobian,
-    Dopri5,
-    Dopri8,
-    Euler,
-    EulerHeun,
-    HalfSolver,
-    Heun,
-    ImplicitEuler,
-    ItoMilstein,
-    KenCarp3,
-    KenCarp4,
-    KenCarp5,
-    Kvaerno3,
-    Kvaerno4,
-    Kvaerno5,
-    LeapfrogMidpoint,
-    Midpoint,
-    MultiButcherTableau,
-    Ralston,
-    ReversibleHeun,
-    SemiImplicitEuler,
-    StormerVerlet,
-    Sil3,
-    StratonovichMilstein,
-    Tsit5,
-)
+from ._saveat import SaveAt, SubSaveAt
 from ._integrate import diffeqsolve as diffeqsolve
 from ._misc import adjoint_rms_seminorm as adjoint_rms_seminorm
 from ._path import AbstractPath as AbstractPath
@@ -149,6 +107,7 @@ from ._solver import (
     SPaRK as SPaRK,
     SRA1 as SRA1,
     StochasticButcherTableau as StochasticButcherTableau,
+    StormerVerlet as StormerVerlet,
     StratonovichMilstein as StratonovichMilstein,
     Tsit5 as Tsit5,
 )
